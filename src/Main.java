@@ -35,10 +35,9 @@ public class Main {
 		Joueur joueur = new Joueur(f);
 		f.ajouter(joueur);
 		
-		ArrayList<Texture> invaders = new ArrayList<Texture>();
-		int invadersNumber = 2 + (int)(Math.random() * ((5 - 2) + 1));
-		
 		ArrayList<Tir> tirs = new ArrayList<Tir>();
+		ArrayList<Ennemi> ennemis = new ArrayList<Ennemi>();
+		int invadersNumber = 2 + (int)(Math.random() * ((5 - 2) + 1));
 		
 		int offset = W_WIDTH / 2 + SS_WIDTH;
 		int deplacement = SPEED_MOVE_INVADERS;
@@ -53,45 +52,32 @@ public class Main {
 				yPosition = 500 + SS_WIDTH + 20;
 			}
 			
-			Texture invader = new Texture("./ressources/spaceship_enemy.png", new Point(xPosition, yPosition), SS_WIDTH, SS_WIDTH);
-			invaders.add(invader);
-			f.ajouter(invaders.get(i));
+			Ennemi ennemi = new Ennemi(new Point(xPosition, yPosition));
+			ennemis.add(ennemi);
+			f.ajouter(ennemis.get(i));
 		}
 		
 		/* Tant qu'il y a des ennemis */
-		while (invaders.size() > 0 && gameOver == false) {
+		while (ennemis.size() > 0 && gameOver == false) {
 			
 			joueur.deplacer(clavier, f);
 			
 			/* Déplacement des vaisseaux ennemis */
-			Texture dernier = invaders.get(0);
-			Texture premier = invaders.get(invaders.size()-1);
-			
-			if(premier.getA().getX() < 0) {
-				deplacement = SPEED_MOVE_INVADERS;
-			}
-			
-			if(dernier.getB().getX() > W_WIDTH) {
-				deplacement = -(SPEED_MOVE_INVADERS);
-			}
-			
-			
-			for (int k=0; k<invaders.size(); k++) {
-				Texture ennemi = invaders.get(k);
-				Point canon = new Point(ennemi.getA().getX() + SS_WIDTH / 2, ennemi.getA().getY());
-				ennemi.translater(deplacement, 0);
+			for (int k=0; k<ennemis.size(); k++) {
+				Ennemi ennemi = ennemis.get(k);
+				ennemi.deplacer(f);
 				
 				int fireOrder = 1 + (int)(Math.random() * ((500 - 1) + 1));
 				
 				if (fireOrder > 495) {
 					if (k % 2 == 0) {
-						Tir tir = new Tir(canon, Couleur.ROUGE, true);
+						Tir tir = new Tir(ennemi.positionCanon(), Couleur.ROUGE, true);
 						tirs.add(tir);
 						f.ajouter(tir.getMissile());
 					}
 				} else if(fireOrder < 2){
 					if (k % 2 != 0) {
-						Tir tir = new Tir(canon, Couleur.ROUGE, true);
+						Tir tir = new Tir(ennemi.positionCanon(), Couleur.ROUGE, true);
 						tirs.add(tir);
 						f.ajouter(tir.getMissile());
 					}
@@ -119,12 +105,12 @@ public class Main {
 				}
 
 				/* Gestion des collisions entre missiles et joueurs */
-				for (int k=0; k<invaders.size(); k++) {
-					Texture ennemi = invaders.get(k);
+				for (int k=0; k<ennemis.size(); k++) {
+					Ennemi ennemi = ennemis.get(k);
 					
 					/* Élimination d'un ennemi */
 					if (tir.getMissile().intersection(ennemi) && !tir.getEstEnnemi()) {
-						invaders.remove(k);
+						ennemis.remove(k);
 						f.supprimer(ennemi);
 						
 						tirs.remove(numeroTir);
