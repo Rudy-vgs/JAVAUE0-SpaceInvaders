@@ -13,8 +13,6 @@ public class Main {
 		final int W_HEIGHT = 800; // Hauteur de la fenêtre
 		
 		final int SS_WIDTH = 70; // Taille du vaisseau
-		final int SPEED_FIRE = 5;
-		final int SPEED_FIRE_INVADERS = 3;// Vitesse de tir
 		final int SPEED_MOVE_INVADERS = 2;
 		
 		Date lastDateFire = new Date();
@@ -36,8 +34,8 @@ public class Main {
 		Texture background = new Texture("./ressources/background.jpg", new Point(0,0), W_WIDTH, W_HEIGHT);
 		f.ajouter(background);
 		
-		Texture spaceShip = new Texture("./ressources/spaceship.png", new Point(W_WIDTH / 2 - SS_WIDTH / 2, 0), SS_WIDTH, SS_WIDTH);
-		f.ajouter(spaceShip);
+		Joueur joueur = new Joueur(f);
+		f.ajouter(joueur);
 		
 		ArrayList<Texture> invaders = new ArrayList<Texture>();
 		int invadersNumber = 2 + (int)(Math.random() * ((5 - 2) + 1));
@@ -65,33 +63,7 @@ public class Main {
 		/* Tant qu'il y a des ennemis */
 		while (invaders.size() > 0 && gameOver == false) {
 			
-			/* Déplacement du vaisseau vers la gauche */
-			if (clavier.getGauche()) {
-				if (spaceShip.getA().getX() > 0) {
-					spaceShip.translater(-5, 0);
-				}
-			}
-			
-			/* Déplacement du vaisseau vers la droite */
-			if (clavier.getDroite()) {
-				if (spaceShip.getB().getX() < W_WIDTH) {
-					spaceShip.translater(5, 0);
-				}
-			}
-			
-			/* Déplacement du vaisseau vers le bas */
-			if (clavier.getBas()) {
-				if (spaceShip.getA().getY() > 0) {
-					spaceShip.translater(0, -5);
-				}
-			}
-			
-			/* Déplacement du vaisseau vers le bas */
-			if (clavier.getHaut()) {
-				if (spaceShip.getB().getY() < W_HEIGHT) {
-					spaceShip.translater(0, 5);
-				}
-			}
+			joueur.deplacer(clavier, f);
 			
 			/* Déplacement des vaisseaux ennemis */
 			Texture dernier = invaders.get(0);
@@ -126,16 +98,14 @@ public class Main {
 						f.ajouter(tir.getMissile());
 					}
 				}
-				
 			}
 			
 			/* Tir du vaisseau */
 			if (clavier.getEspace()) {
 				Date newDateFire = new Date();
 				
-				if ((newDateFire.getTime() - lastDateFire.getTime()) > 500){
-					Point canon = new Point(spaceShip.getA().getX() + SS_WIDTH / 2, spaceShip.getB().getY());
-					Tir tir = new Tir(canon);
+				if (joueur.peutTirer()){
+					Tir tir = new Tir(joueur.positionCanon());
 					
 					tirs.add(tir);
 					f.ajouter(tir.getMissile());
@@ -168,7 +138,7 @@ public class Main {
 					}
 					
 					/* Élimination joueur */
-					if (tir.getMissile().intersection(spaceShip) && tir.getEstEnnemi()) {
+					if (tir.getMissile().intersection(joueur) && tir.getEstEnnemi()) {
 						gameOver = true;
 					}
 				}

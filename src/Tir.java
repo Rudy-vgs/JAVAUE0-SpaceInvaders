@@ -37,7 +37,7 @@ public class Tir {
 		}
 	}
 	
-	/* LE TIR EST IL ENCORE DANS LA FENÊTRE DE JEU */
+	/* LE TIR EST-IL ENCORE DANS LA FENÊTRE DE JEU ? */
 	public boolean estVisible(int hauteurFenetre) {
 		int y = this.missile.getO().getY();
 		if (y > hauteurFenetre || y < 0) {
