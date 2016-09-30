@@ -24,6 +24,16 @@ public class Tir {
 		this.missile.translater(0, this.vitesse);
 	}
 	
+	/* LE TIR EST IL ENCORE DANS LA FENÊTRE DE JEU */
+	public boolean estVisible(int hauteurFenetre) {
+		int y = this.missile.getO().getY();
+		if (y > hauteurFenetre || y < 0) {
+			return false;
+		} 
+		
+		return true;
+	}
+	
 	/* GETTERS & SETTERS */	
 	public Cercle getMissile() {
 		return missile;

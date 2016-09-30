@@ -42,7 +42,7 @@ public class Main {
 		ArrayList<Texture> invaders = new ArrayList<Texture>();
 		int invadersNumber = 2 + (int)(Math.random() * ((5 - 2) + 1));
 		
-		ArrayList<Cercle> missiles = new ArrayList<Cercle>();
+		ArrayList<Tir> tirs = new ArrayList<Tir>();
 		ArrayList<Cercle> missilesInvaders = new ArrayList<Cercle>();
 		
 		int offset = W_WIDTH / 2 + SS_WIDTH;
@@ -153,37 +153,38 @@ public class Main {
 				
 				if ((newDateFire.getTime() - lastDateFire.getTime()) > 500){
 					Point canon = new Point(spaceShip.getA().getX() + SS_WIDTH / 2, spaceShip.getB().getY());
-					Cercle missile = new Cercle(Couleur.CYAN, canon, 3, true);
+					Tir tir = new Tir(canon, Couleur.CYAN);
+					Cercle missile = tir.getMissile();
 					
-					missiles.add(missile);
+					tirs.add(tir);
 					f.ajouter(missile);
 					lastDateFire = newDateFire;
 				}
 			}
 			
 			/* Déplacement des missiles */
-			for (int numeroMissile=0; numeroMissile<missiles.size(); numeroMissile++) {
-				Cercle missile = missiles.get(numeroMissile);
-				missile.translater(0, SPEED_FIRE);
+			for (int numeroTir=0; numeroTir<tirs.size(); numeroTir++) {
+				Tir tir = tirs.get(numeroTir);
+				tir.deplacer();
 				
 				/* Suppression du missile s'il sort de la fenêtre */
-				if (missile.getO().getY() > W_HEIGHT) {
-					f.supprimer(missile);
-					missiles.remove(numeroMissile);
+				if (!tir.estVisible(W_HEIGHT)) {
+					f.supprimer(tir.getMissile());
+					tirs.remove(numeroTir);
 				}
-				
-				if (invaders.size() > 0) {
-					for (int k=0; k<invaders.size(); k++) {
-						Texture ennemi = invaders.get(k);
-						if (missile.intersection(ennemi)) {
-							invaders.remove(k);
-							f.supprimer(ennemi);
-							
-							missiles.remove(numeroMissile);
-							f.supprimer(missile);
-						}
+
+				/* Gestion des collisions entre missiles et joueurs */
+				for (int k=0; k<invaders.size(); k++) {
+					Texture ennemi = invaders.get(k);
+					if (tir.getMissile().intersection(ennemi)) {
+						invaders.remove(k);
+						f.supprimer(ennemi);
+						
+						tirs.remove(numeroTir);
+						f.supprimer(tir.getMissile());
 					}
 				}
+				
 			}
 			
 			/* Rafraichissement de la fenêtre */
