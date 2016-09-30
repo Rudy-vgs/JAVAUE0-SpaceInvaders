@@ -7,21 +7,35 @@ public class Tir {
 	
 	private Cercle missile;
 	private int vitesse;
+	private boolean estEnnemi;
 	
 	/* CONSTRUCTEURS */
-	public Tir(Point origine, Couleur couleur) {
-		this.missile = new Cercle(couleur, origine, 3, true);
+	public Tir(Point origine) {
+		this.missile = new Cercle(Couleur.CYAN, origine, 3, true);
+		this.estEnnemi= false;
 		this.vitesse = VITESSE_DEFAUT;
 	}
 	
-	public Tir(Point origine, Couleur couleur, int vitesse) {
+	public Tir(Point origine, Couleur couleur, boolean ennemi) {
 		this.missile = new Cercle(couleur, origine, 3, true);
+		this.estEnnemi= ennemi;
+		this.vitesse = VITESSE_DEFAUT;
+	}
+	
+	public Tir(Point origine, Couleur couleur, boolean ennemi, int vitesse) {
+		this.missile = new Cercle(couleur, origine, 3, true);
+		this.estEnnemi= ennemi;
 		this.vitesse = vitesse;
 	}
 	
 	/* DEPLACEMENT DU TIR */
 	public void deplacer() {
-		this.missile.translater(0, this.vitesse);
+		if (this.estEnnemi) {
+			this.missile.translater(0, -this.vitesse);
+		} else {
+			this.missile.translater(0, this.vitesse);
+		}
+		
 	}
 	
 	/* LE TIR EST IL ENCORE DANS LA FENÊTRE DE JEU */

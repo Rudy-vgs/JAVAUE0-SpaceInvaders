@@ -153,7 +153,7 @@ public class Main {
 				
 				if ((newDateFire.getTime() - lastDateFire.getTime()) > 500){
 					Point canon = new Point(spaceShip.getA().getX() + SS_WIDTH / 2, spaceShip.getB().getY());
-					Tir tir = new Tir(canon, Couleur.CYAN);
+					Tir tir = new Tir(canon);
 					Cercle missile = tir.getMissile();
 					
 					tirs.add(tir);
@@ -198,8 +198,6 @@ public class Main {
 				System.out.println ( e );
 			}
 		}
-		
-		Fenetre f2 = new Fenetre("Shoot'em up", W_WIDTH, W_HEIGHT);
 	}
 
 }
