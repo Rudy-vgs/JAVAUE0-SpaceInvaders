@@ -43,7 +43,6 @@ public class Main {
 		int invadersNumber = 2 + (int)(Math.random() * ((5 - 2) + 1));
 		
 		ArrayList<Tir> tirs = new ArrayList<Tir>();
-		ArrayList<Cercle> missilesInvaders = new ArrayList<Cercle>();
 		
 		int offset = W_WIDTH / 2 + SS_WIDTH;
 		int deplacement = SPEED_MOVE_INVADERS;
@@ -106,45 +105,28 @@ public class Main {
 				deplacement = -(SPEED_MOVE_INVADERS);
 			}
 			
+			
 			for (int k=0; k<invaders.size(); k++) {
 				Texture ennemi = invaders.get(k);
+				Point canon = new Point(ennemi.getA().getX() + SS_WIDTH / 2, ennemi.getA().getY());
 				ennemi.translater(deplacement, 0);
 				
 				int fireOrder = 1 + (int)(Math.random() * ((500 - 1) + 1));
+				
 				if (fireOrder > 495) {
 					if (k % 2 == 0) {
-						Point canon = new Point(ennemi.getA().getX() + SS_WIDTH / 2, ennemi.getA().getY());
-						Cercle missileEnnemi = new Cercle(Couleur.ROUGE, canon, 3, true);
-						missilesInvaders.add(missileEnnemi);
-						f.ajouter(missileEnnemi);
+						Tir tir = new Tir(canon, Couleur.ROUGE, true);
+						tirs.add(tir);
+						f.ajouter(tir.getMissile());
 					}
 				} else if(fireOrder < 2){
 					if (k % 2 != 0) {
-						Point canon = new Point(ennemi.getA().getX() + SS_WIDTH / 2, ennemi.getA().getY());
-						Cercle missileEnnemi = new Cercle(Couleur.ROUGE, canon, 3, true);
-						missilesInvaders.add(missileEnnemi);
-						f.ajouter(missileEnnemi);
+						Tir tir = new Tir(canon, Couleur.ROUGE, true);
+						tirs.add(tir);
+						f.ajouter(tir.getMissile());
 					}
 				}
 				
-				
-				
-			}
-			
-			/* Déplacement des missiles ennemis */
-			for (int numeroMissileEnnemi=0; numeroMissileEnnemi<missilesInvaders.size(); numeroMissileEnnemi++) {
-				Cercle missileEnnemi = missilesInvaders.get(numeroMissileEnnemi);
-				missileEnnemi.translater(0, -SPEED_FIRE_INVADERS);
-				
-				/* Suppression du missile s'il sort de la fenêtre */
-				if (missileEnnemi.getO().getY() < 0) {
-					f.supprimer(missileEnnemi);
-					missilesInvaders.remove(numeroMissileEnnemi);
-				}
-				
-				if (missileEnnemi.intersection(spaceShip)) {
-					gameOver = true;
-				}
 			}
 			
 			/* Tir du vaisseau */
@@ -154,10 +136,9 @@ public class Main {
 				if ((newDateFire.getTime() - lastDateFire.getTime()) > 500){
 					Point canon = new Point(spaceShip.getA().getX() + SS_WIDTH / 2, spaceShip.getB().getY());
 					Tir tir = new Tir(canon);
-					Cercle missile = tir.getMissile();
 					
 					tirs.add(tir);
-					f.ajouter(missile);
+					f.ajouter(tir.getMissile());
 					lastDateFire = newDateFire;
 				}
 			}
@@ -176,12 +157,19 @@ public class Main {
 				/* Gestion des collisions entre missiles et joueurs */
 				for (int k=0; k<invaders.size(); k++) {
 					Texture ennemi = invaders.get(k);
-					if (tir.getMissile().intersection(ennemi)) {
+					
+					/* Élimination d'un ennemi */
+					if (tir.getMissile().intersection(ennemi) && !tir.getEstEnnemi()) {
 						invaders.remove(k);
 						f.supprimer(ennemi);
 						
 						tirs.remove(numeroTir);
 						f.supprimer(tir.getMissile());
+					}
+					
+					/* Élimination joueur */
+					if (tir.getMissile().intersection(spaceShip) && tir.getEstEnnemi()) {
+						gameOver = true;
 					}
 				}
 				

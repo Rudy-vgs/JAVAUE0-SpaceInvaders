@@ -35,7 +35,6 @@ public class Tir {
 		} else {
 			this.missile.translater(0, this.vitesse);
 		}
-		
 	}
 	
 	/* LE TIR EST IL ENCORE DANS LA FENÊTRE DE JEU */
@@ -65,6 +64,14 @@ public class Tir {
 		this.vitesse = vitesse;
 	}
 	
+	public boolean getEstEnnemi() {
+		return estEnnemi;
+	}
+
+	public void setEstEnnemi(boolean estEnnemi) {
+		this.estEnnemi = estEnnemi;
+	}
+
 	/* TO STRING */
 	@Override
 	public String toString() {
