@@ -52,6 +52,10 @@ public class Ennemi extends Texture{
 		this.sens = sens;
 	}
 	
+	public static int getTaille() {
+		return TAILLE;
+	}
+
 	/* TO STRING */
 	@Override
 	public String toString() {
