@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,7 +14,6 @@ public class Main {
 		final int SS_WIDTH = 70; // Taille du vaisseau
 		final int SPEED_MOVE_INVADERS = 2;
 		
-		Date lastDateFire = new Date();
 		boolean gameOver = false;
 		
 		/* Éléments basique de l'interface */
@@ -102,14 +100,10 @@ public class Main {
 			
 			/* Tir du vaisseau */
 			if (clavier.getEspace()) {
-				Date newDateFire = new Date();
-				
 				if (joueur.peutTirer()){
 					Tir tir = new Tir(joueur.positionCanon());
-					
 					tirs.add(tir);
 					f.ajouter(tir.getMissile());
-					lastDateFire = newDateFire;
 				}
 			}
 			
@@ -119,7 +113,7 @@ public class Main {
 				tir.deplacer();
 				
 				/* Suppression du missile s'il sort de la fenêtre */
-				if (!tir.estVisible(W_HEIGHT)) {
+				if (!tir.estVisible(f)) {
 					f.supprimer(tir.getMissile());
 					tirs.remove(numeroTir);
 				}
